@@ -3,59 +3,119 @@
   <head>
     <title>Hello world!</title>
     <style type="text/css">
+      main {
+        margin: 8px;
+      }
+
       [draggable="true"] {
         width: fit-content;
         color: black;
         /* background-color: rgb(0, 0, 0, 50%); */
-        background-color: white;
+        background-color: yellow;
         border-radius: 10px;
+        padding: 10px;
+        position: absolute;
       }
       body {
-        /* background-image: url("https://ttma1046.github.io/gallery/vscode.jpg"); */
-        background-image: url("https://www.freecodecamp.org/news/content/images/2021/11/cp.png");
-        background-size: fill;
+        /* background: url("https://ttma1046.github.io/gallery/vscode.jpg"); */
+        background: url("./img0.jpg") no-repeat black;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
         bottom: 0;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      #taskbar {
+        width: 100%;
+        height: 50px;
+        display: block;
+        background-color: rgb(37 37 37);
+        position: absolute;
+        bottom: 0;
+      }
+
+      #taskbar > button {
+        display: block;
+        width: 50px;
+        height: 50px;
+        background-color: rgb(37 37 37);
+        border: none;
+        float: left;
+      }
+
+      #taskbar > button:hover {
+        background-color: rgb(57 57 57);
+      }
+
+      #taskbar > button.start-button > img {
+        filter: grayscale(1) brightness(2);
+      }
+      #taskbar > button > img {
+        width: -webkit-fill-available;
+        margin: 8px;
       }
     </style>
     <script>
       // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/drag_event
       document.addEventListener("DOMContentLoaded", (event) => {
-        const dragElement = event.target.querySelector("main");
+          const dragElements = document.querySelectorAll("[draggable]");
 
-        let offsetX = 0;
-        let offsetY = 0;
+          let offsetX = 0;
+          let offsetY = 0;
 
-        dragElement.addEventListener("dragstart", (event) => {
-          offsetX = event.clientX - dragElement.getBoundingClientRect().left;
-          offsetY = event.clientY - dragElement.getBoundingClientRect().top;
-          event.dataTransfer.effectAllowed = "move";
-          dragElement.style.cursor = "grabbing";
-          console.log("Drag started.");
-        })
+          dragElements.forEach(dragElement => {
+              dragElement.addEventListener("dragstart", (event) => {
+                  offsetX = event.clientX - event.target.getBoundingClientRect().left;
+                  offsetY = event.clientY - event.target.getBoundingClientRect().top;
+                  event.dataTransfer.effectAllowed = "move";
+                  event.target.style.cursor = "grabbing";
+                  console.log("Drag started.");
+              });
 
-        document.addEventListener("dragover", (event) => {
-          event.preventDefault();
-          dragElement.style.cursor = "grabing";
-          event.dataTransfer.dropEffect = "move";
-          dragElement.style.left = `${event.clientX - offsetX}px`;
-          dragElement.style.top = `${event.clientY - offsetY}px`;
-          console.log("Dragging.")
-          console.log(`X: ${event.clientX}, Y: ${event.clientY}`);
-        })
+              dragElement.addEventListener("dragover", (event) => {
+                  event.preventDefault();
+                  event.target.style.cursor = "grabbing";
+                  event.dataTransfer.dropEffect = "move";
+                  console.log("Dragging.");
+                  console.log(`X: ${event.clientX}, Y: ${event.clientY}`);
+              });
 
-        dragElement.addEventListener("dragend", (event) => {
-          dragElement.style.cursor = "grab";
-          dragElement.style.position = "absolute";
-          dragElement.style.cursor = "grab"
-          console.log("Drag ended.");
-        });
+              dragElement.addEventListener("dragend", (event) => {
+                  event.target.style.left = `${event.clientX - offsetX}px`;
+                  event.target.style.top = `${event.clientY - offsetY}px`;
+                  event.target.style.cursor = "grab";
+                  console.log("Drag ended.");
+              });
+          });
       });
+    </script>
+    <script>
+        let previousContent = '';
+
+        function fetchPage() {
+            fetch(window.location.href, { cache: "no-store" })
+                .then(response => response.text())
+                .then(content => {
+                    if (previousContent && previousContent !== content) {
+                        console.log('Content changed, reloading page...');
+                        location.reload();
+                    }
+                    previousContent = content;
+                })
+                .catch(error => console.error('Error fetching page:', error));
+        }
+
+        setInterval(fetchPage, 500);
+        fetchPage();
     </script>
   </head>
   <body>
     <main>
-    <div draggable="true" style="cursor: grab;">
-      <h1>Hello world!</h1>
+    <div draggable="true" style="cursor: grab; background: linear-gradient(135deg,#c8102e 16.66%,#fd8c00 33.32%,#ffe500 49.98%,#119f0b 66.64%,#0644b3 83.3%,#c22edc);">
+      <nav>Hello world!</nav>
       <p>Hello world...</p>
       <h2>Hello world:</h2>
       <ul>
@@ -65,7 +125,27 @@
         <li>Hello world!</li>
       </ul>
     </div>
-      <!-- <img src="https://ttma1046.github.io/gallery/vscode.jpg" alt="Hello world!" width="1000px"> -->
+    <div draggable="true" style="cursor: grab;">
+      <nav>Hello world!</nav>
+      <p>Hello world...</p>
+      <h2>Hello world:</h2>
+      <ul>
+        <li>Hello world!</li>
+        <li>Hello world!</li>
+        <li>Hello world!</li>
+        <li>Hello world!</li>
+      </ul>
+    </div>
+    <!-- <img src="https://ttma1046.github.io/gallery/vscode.jpg" alt="Hello world!" width="1000px"> -->
     </main>
+    <nav id="taskbar">
+      <button class="start-button" title="Start"><img src="./Windows_logo.svg"></button>
+      <button title="Windows Explorer"><img src="./Windows_Explorer.svg"></button>
+      <button title="Windows Explorer"><img src="./Windows_Explorer.svg"></button>
+      <button title="Windows Explorer"><img src="./Windows_Explorer.svg"></button>
+      <button title="Windows Explorer"><img src="./Windows_Explorer.svg"></button>
+      <button style="float: right; width: 5px; border-left: white 1px; padding: 0; border-left: solid gray 1px;"></button>
+      <button title="Notifications" style="float: right;"><img style="filter: invert(1) brightness(2);" src="./Windows_notifications.svg"></button>
+    </nav>
   </body>
 </html>
